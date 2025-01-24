@@ -1,0 +1,14 @@
+[
+    {
+        "directory": ".",
+        "file": "src/main.c",
+        "output": "bin/main",
+        "arguments": ["clang", "-std=c11", "-Wall", "-Werror", "-fshort-enums", "-fsanitize=address", "-o", "bin/main", "src/main.c"]
+    },
+    {
+        "directory": ".",
+        "file": "src/num.c",
+        "output": "bin/num",
+        "arguments": ["clang", "-std=c11", "-Wall", "-Werror", "-fshort-enums", "-fsanitize=address", "-o", "bin/num", "src/num.c"]
+    }
+]
