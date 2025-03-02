@@ -6,6 +6,7 @@
 #define COMPLEXMAIN
 #endif
 
+#include <stdint.h>
 #include <math.h>
 #include <stdbool.h>
 
@@ -14,6 +15,8 @@
   ret.r = real;                                                                \
   ret.i = imag;                                                                \
   return ret;
+
+#define IPMC(var, op, arg) var = op(var, arg);
 
 typedef struct complex {
   double r, i;
@@ -79,10 +82,7 @@ const complex c_cos(complex a) {
   RETC(cos(a.r) * (s + 1 / s) / 2, sin(a.r) * (1 / s - s) / 2)
 }
 
-// s = e^ix
-// s² -2iys - 1 = 0
-// s = iy ± sqrt(1-y²)
-// x = -i ln(iy±sqrt(1-y²))
+const complex c_tan(complex a) { return c_div(c_sin(a), c_cos(a)); }
 
 const complex c_square(complex a) { RETC(a.r * a.r - a.i * a.i, 2 * a.r * a.i) }
 
@@ -95,6 +95,25 @@ const complex c_sqrt(complex a) {
 const complex c_asin(complex a) {
   return c_mul(c_neg(I),
                c_ln(c_add(c_mul(I, a), c_sqrt(c_sub(ONE, c_square(a))))));
+}
+
+const complex c_acos(complex a) {
+  return c_mul(c_neg(I), c_ln(c_add(a, c_sqrt(c_sub(c_square(a), ONE)))));
+}
+
+const complex c_atan(complex a) {
+  return c_mul(c_new(0, -0.5), c_ln(c_div(c_sub(I, a), c_add(I, a))));
+}
+
+const complex c_powi(complex z, int64_t n) {
+    complex ret = ONE;
+    while (n) {
+        if (n % 2 == 1) IPMC(ret, c_mul, z);
+        if (n % 2 == -1) IPMC(ret, c_div, z);
+        z = c_square(z);
+        n /= 2;
+    }
+    return ret;
 }
 
 #ifdef COMPLEXMAIN
@@ -113,7 +132,7 @@ bool testeq(complex a, complex b, complex c) {
 
 double better() { return (rand() / (double)RAND_MAX) * 200 - 100; }
 
-complex c_rand() { RETC(rand() / (double)RAND_MAX, rand() / (double)RAND_MAX) }
+complex c_rand() { RETC(better(), better()) }
 
 int main(void) {
   srand(time(NULL));
