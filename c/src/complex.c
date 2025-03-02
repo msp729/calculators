@@ -116,6 +116,33 @@ const complex c_powi(complex z, int64_t n) {
     return ret;
 }
 
+const complex c_sinh(complex z) {
+  return c_div(c_sub(c_exp(z), c_exp(c_neg(z))), c_new(2, 0));
+}
+
+const complex c_cosh(complex z) {
+  return c_div(c_add(c_exp(z), c_exp(c_neg(z))), c_new(2, 0));
+}
+
+const complex c_tanh(complex z) {
+  complex ez = c_exp(z);
+  complex emz = c_recip(ez);
+  return c_div(c_sub(ez, emz), c_add(ez, emz));
+}
+
+const complex c_asinh(complex z) {
+  return c_ln(c_add(z, c_sqrt(c_add(c_square(z), c_new(1, 0)))));
+}
+
+const complex c_acosh(complex z) {
+  return c_ln(c_add(z, c_sqrt(c_sub(c_square(z), c_new(1, 0)))));
+}
+
+const complex c_atanh(complex z) {
+  return c_div(c_ln(c_div(c_add(c_new(1, 0), z), c_sub(c_new(1, 0), z))),
+               c_new(2, 0));
+}
+
 #ifdef COMPLEXMAIN
 #include <stdio.h>
 #include <stdlib.h>

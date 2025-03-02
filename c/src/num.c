@@ -30,6 +30,8 @@
     return Cv;                                                                 \
   }
 
+#define SNM(X, Rf, Cf) NMATCH(X, n_r(Rf((double)z)), n_r(Rf(r)), n_c(Cf(c)))
+
 typedef union intern {
   int64_t z;
   double r;
@@ -111,6 +113,16 @@ const num n_ln(num x) {
   NMATCH(x, z > 0 ? n_r(log((double)z)) : n_c(c_new(log(-(double)z), M_PI)),
          r > 0 ? n_r(log(r)) : n_c(c_new(log(-r), M_PI)), n_c(c_ln(c)))
 }
+
+const num n_sin(num x) { SNM(x, sin, c_sin) }
+const num n_cos(num x) { SNM(x, cos, c_cos) }
+const num n_tan(num x) { SNM(x, tan, c_tan) }
+
+const num n_sinh(num x) { SNM(x, sinh, c_sinh) }
+const num n_cosh(num x) { SNM(x, cosh, c_cosh) }
+const num n_tanh(num x) { SNM(x, tanh, c_tanh) }
+
+const num n_atan(num x) { SNM(x, atan, c_atan) }
 
 #ifdef NUMMAIN
 
