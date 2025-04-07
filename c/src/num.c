@@ -31,6 +31,24 @@
   }
 
 #define SNM(X, Rf, Cf) NMATCH(X, n_r(Rf((double)z)), n_r(Rf(r)), n_c(Cf(c)))
+#define CNM(X, Rc, Rf, Cf)                                                     \
+  int64_t z;                                                                   \
+  double r;                                                                    \
+  complex c;                                                                   \
+  num n = X;                                                                   \
+  switch (n.tag) {                                                             \
+  case Z:                                                                      \
+    z = n.val.z;                                                               \
+    n.val.r = (double)z;                                                       \
+  case R:                                                                      \
+    r = n.val.r;                                                               \
+    if (Rc)                                                                    \
+      return n_new(Rf);                                                        \
+    n.val.c = c_new(r, 0);                                                     \
+  case C:                                                                      \
+    c = n.val.c;                                                               \
+    return n_new(Cf);                                                          \
+  }
 
 typedef union intern {
   int64_t z;
@@ -122,7 +140,13 @@ const num n_sinh(num x) { SNM(x, sinh, c_sinh) }
 const num n_cosh(num x) { SNM(x, cosh, c_cosh) }
 const num n_tanh(num x) { SNM(x, tanh, c_tanh) }
 
+const num n_asin(num x) { CNM(x, fabs(r) <= 1.0, asin(r), c_asin(c)) }
+const num n_acos(num x) { CNM(x, fabs(r) <= 1.0, acos(r), c_acos(c)) }
 const num n_atan(num x) { SNM(x, atan, c_atan) }
+
+const num n_asinh(num x) { SNM(x, asinh, c_asinh) }
+const num n_acosh(num x) { CNM(x, r >= 1.0, acosh(r), c_acosh(c)) }
+const num n_atanh(num x) { CNM(x, fabs(r) <= 1.0, atanh(r), c_atanh(c)) }
 
 #ifdef NUMMAIN
 
