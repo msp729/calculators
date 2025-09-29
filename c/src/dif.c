@@ -19,9 +19,9 @@ const dif d_init(num x, num dx) {
     return ret;
 }
 
-const dif d_const(num x) { return d_init(x, n_new((int64_t)0)); }
+const dif d_const(num x) { return d_init(x, n_r(0.0)); }
 
-#define d_new(X) d_const(_Generic((X), int64_t: n_z, double: n_r, complex: n_c)(X))
+#define d_new(X) d_const(_Generic((X), double: n_r, complex: n_c)(X))
 
 const dif d_add(dif a, dif b) { return d_init(n_add(a.x, b.x), n_add(a.dx, b.dx)); }
 const dif d_neg(dif x) { return d_init(n_neg(x.x), n_neg(x.dx)); }
@@ -47,18 +47,18 @@ const dif d_pow(dif a, dif b) { return d_exp(d_mul(d_ln(a), b)); }
 
 const dif d_cos(dif x) DFORM(x, n_cos(v), n_neg(n_sin(v)));
 const dif d_sin(dif x) DFORM(x, n_sin(v), n_cos(v));
-const dif d_tan(dif x) DFORM(x, n_tan(v), n_pow(n_cos(v), n_z(-2)));
+const dif d_tan(dif x) DFORM(x, n_tan(v), n_pow(n_cos(v), n_r(-2.0)));
 
 const dif d_sinh(dif x) DFORM(x, n_sinh(v), n_cosh(v));
 const dif d_cosh(dif x) DFORM(x, n_cosh(v), n_sinh(v));
-const dif d_tanh(dif x) DFORM(x, n_tanh(v), n_pow(n_cosh(v), n_z(-2)));
+const dif d_tanh(dif x) DFORM(x, n_tanh(v), n_pow(n_cosh(v), n_r(-2.0)));
 
-const dif d_asin(dif x) DFORM(x, n_asin(v), n_recip(n_sub(n_z(1), n_pow(v, n_z(2)))));
-const dif d_acos(dif x) DFORM(x, n_acos(v), n_neg(n_recip(n_sub(n_z(1), n_pow(v, n_z(2))))));
-const dif d_atan(dif x) DFORM(x, n_atan(v), n_recip(n_add(n_z(1), n_pow(v, n_z(2)))));
+const dif d_asin(dif x) DFORM(x, n_asin(v), n_recip(n_sub(n_r(1.0), n_pow(v, n_r(2.0)))));
+const dif d_acos(dif x) DFORM(x, n_acos(v), n_neg(n_recip(n_sub(n_r(1.0), n_pow(v, n_r(2.0))))));
+const dif d_atan(dif x) DFORM(x, n_atan(v), n_recip(n_add(n_r(1.0), n_pow(v, n_r(2.0)))));
 
-const dif d_asinh(dif x) DFORM(x, n_asinh(v), n_pow(n_add(n_pow(v, n_z(2)), n_z(1)), n_r(-0.5)));
-const dif d_acosh(dif x) DFORM(x, n_asinh(v), n_pow(n_sub(n_pow(v, n_z(2)), n_z(1)), n_r(-0.5)));
-const dif d_atanh(dif x) DFORM(x, n_atanh(v), n_recip(n_sub(n_z(1), n_pow(v, n_z(2)))));
+const dif d_asinh(dif x) DFORM(x, n_asinh(v), n_pow(n_add(n_pow(v, n_r(2.0)), n_r(1.0)), n_r(-0.5)));
+const dif d_acosh(dif x) DFORM(x, n_asinh(v), n_pow(n_sub(n_pow(v, n_r(2.0)), n_r(1.0)), n_r(-0.5)));
+const dif d_atanh(dif x) DFORM(x, n_atanh(v), n_recip(n_sub(n_r(1.0), n_pow(v, n_r(2.0)))));
 
 #endif
