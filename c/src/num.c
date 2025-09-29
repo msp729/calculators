@@ -132,6 +132,8 @@ const num n_ln(num x) {
          r > 0 ? n_r(log(r)) : n_c(c_new(log(-r), M_PI)), n_c(c_ln(c)))
 }
 
+const num n_pow(num x, num y) { return n_exp(n_mul(n_ln(x), y)); }
+
 const num n_sin(num x) { SNM(x, sin, c_sin) }
 const num n_cos(num x) { SNM(x, cos, c_cos) }
 const num n_tan(num x) { SNM(x, tan, c_tan) }
@@ -152,7 +154,9 @@ const num n_atanh(num x) { CNM(x, fabs(r) <= 1.0, atanh(r), c_atanh(c)) }
 
 #include <stdio.h>
 
-int main(void) { printf("num.c"); }
+int main(void) {
+    printf("num.c\n");
+}
 
 #endif
 #endif

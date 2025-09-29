@@ -1,10 +1,10 @@
 CC = clang
 
-CCFLAGS = -std=c11 -Wall -Werror -fshort-enums -fsanitize=address
+CCFLAGS = -std=c11 -lreadline -Wall -Werror -fshort-enums -fsanitize=address
 
 main: bin/main
 
-tests: bin/complex bin/num
+tests: bin/complex bin/num bin/dif
 
 bin/%: src/%.c
 	mkdir -p bin
