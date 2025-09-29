@@ -112,11 +112,18 @@ const num n_ln(num x) {
          r > 0 ? n_r(log(r)) : n_c(c_new(log(-r), M_PI)), n_c(c_ln(c)))
 }
 
+const num n_pow(num x, num y) { return n_exp(n_mul(n_ln(x), y)); }
+
+const num n_sin(num x) {NMATCH(x, n_r(sin((double)z)), n_r(sin(r)), n_c(c_sin(c)))}
+const num n_cos(num x) {NMATCH(x, n_r(cos((double)z)), n_r(cos(r)), n_c(c_cos(c)))}
+
 #ifdef NUMMAIN
 
 #include <stdio.h>
 
-int main(void) { printf("num.c"); }
+int main(void) {
+    printf("num.c\n");
+}
 
 #endif
 #endif
