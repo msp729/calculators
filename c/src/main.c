@@ -2,21 +2,31 @@
 #include <string.h>
 #define MAIN
 
-#include <stdio.h>
-#include <readline/readline.h>
-#include <readline/history.h>
 #include "dif.c"
+#include <readline/history.h>
+#include <readline/readline.h>
+#include <stdio.h>
 
 #define GET1 op1 = calculate(ans, line)
 #define GET2 op2 = calculate(ans, line)
 #define GET(n) *line += n; GET1; GET2
 
+/// what one might expect
 bool iswhitespace(char);
-int strpre(const char *, const char *);
-void command(char **);
-dif calculate(dif, char **);
+/// is the first argument a prefix of the second?
+/// if so, return the length of the first argument.
+int strpre(const char *pre, const char *str);
+/// accept a newton's method command from a pointer to a char*
+dif command(dif ans, char **);
+/// accept a value from a pointer to a char*
+dif calculate(dif ans, char **);
+/// parse a function call
 dif fcall(dif, char **);
-void writeln(dif);
+/// output (wd is "should you print the derivative?")
+void write(dif, bool wd);
+/// output (wd is "should you print the derivative?")
+void writeln(dif, bool wd);
+/// main function
 int main(void);
 
 bool iswhitespace(char c) {
@@ -31,10 +41,10 @@ int strpre(const char* prefix, const char* string) {
     return i;
 }
 
-void command(char **line) {
+dif command(dif ans, char **line) {
   if (**line == '0') {
     (*line)++;
-    dif cur = calculate(d_new(0.0), line);
+    dif cur = calculate(ans, line);
     cur.dx = n_r(1.0);
     int limit = 999;
     while (limit > 0) {
@@ -44,14 +54,13 @@ void command(char **line) {
         break;
       cur = d_sub(cur, d_const(n_div(fx.x, fx.dx)));
       limit--;
-      writeln(cur);
-      writeln(fx);
     }
     if (limit == 0)
       printf("Error: ran into iteration limit.");
-    writeln(cur);
+    return cur;
   } else
     printf("commands other than :0 not implemented yet"); // TODO
+  return ans;
 }
 
 dif calculate(dif ans, char** line) {
@@ -98,23 +107,29 @@ dif fcall(dif ans, char **line) {
   return ans;
 }
 
-void writeln(dif d) {
+void writeln(dif d, bool wd) {
+  write(d, wd);
+  printf("\n");
+}
+
+void write(dif d, bool wd) {
   num x = d.x;
   switch (x.tag) {
   case R:
-    printf("%lf\t", x.val.r);
+    printf("%lf", x.val.r);
     break;
   case C:
-    printf("%lf + %lfi\t", x.val.c.r, x.val.c.i);
+    printf("%lf + %lfi", x.val.c.r, x.val.c.i);
     break;
   }
   x = d.dx;
+  if (wd)
   switch (x.tag) {
   case R:
-    printf("%lf\n", x.val.r);
+    printf("\t%lf", x.val.r);
     break;
   case C:
-    printf("%lf + %lfi\n", x.val.c.r, x.val.c.i);
+    printf("\t%lf + %lfi", x.val.c.r, x.val.c.i);
     break;
   }
 }
@@ -133,8 +148,8 @@ int main(void) {
       line++;
     if (line[0] == ':') {
       line++;
-      command(&line);
+      writeln(ans = command(ans, &line), false);
     } else
-      writeln(ans = calculate(ans, &line));
+      writeln(ans = calculate(ans, &line), false);
   }
 }
